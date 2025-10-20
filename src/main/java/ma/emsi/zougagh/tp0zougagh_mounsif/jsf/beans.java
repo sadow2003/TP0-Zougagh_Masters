@@ -1,3 +1,5 @@
+package ma.emsi.zougagh.tp0zougagh_mounsif.jsf;
+
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
