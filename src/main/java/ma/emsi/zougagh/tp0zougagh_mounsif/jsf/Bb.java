@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static sun.tools.jconsole.JConsole.isDebug;
+
 /**
  * Backing bean pour la page JSF index.xhtml.
  * Portée view pour conserver l'état de la conversation qui dure pendant plusieurs requêtes HTTP.
@@ -57,6 +59,7 @@ public class Bb implements Serializable {
      */
     @Inject
     private FacesContext facesContext;
+    private boolean debug;
 
     /**
      * Obligatoire pour un bean CDI (classe gérée par CDI), s'il y a un autre constructeur.
@@ -186,6 +189,16 @@ public class Bb implements Serializable {
 
         return this.listeRolesSysteme;
     }
+    public void toggleDebug() {
+        this.setDebug(!isDebug());
+    }
 
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
 }
 
