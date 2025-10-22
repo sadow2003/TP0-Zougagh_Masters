@@ -118,24 +118,55 @@ public class Bb implements Serializable {
      */
     public String envoyer() {
         if (question == null || question.isBlank()) {
-            // Erreur ! Le formulaire va être réaffiché en réponse à la requête POST, avec un message d'erreur.
+            // Erreur ! Le formulaire va être réaffiché avec un message d'erreur.
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Texte question vide", "Il manque le texte de la question");
+                    "Texte question vide", "tu n'a pas donner un question!!!,tu ve donner un question!!!");
             facesContext.addMessage(null, message);
             return null;
         }
-        // Entourer la réponse avec "||".
-        this.reponse = "||";
-        // Si la conversation n'a pas encore commencé, ajouter le rôle système au début de la réponse
+
+        StringBuilder reponseServeur = new StringBuilder();
+
+        // 1. Gérer le rôle système (si c'est le début de la conversation)
         if (this.conversation.isEmpty()) {
             // Ajouter le rôle système au début de la réponse
-            this.reponse += roleSysteme.toUpperCase(Locale.FRENCH) + "\n";
+            reponseServeur.append("Rôle système sélectionné : ")
+                    .append(this.roleSysteme)
+                    .append("\n--------------------------------\n");
+
             // Invalide le bouton pour changer le rôle système
             this.roleSystemeChangeable = false;
         }
-        this.reponse += question.toLowerCase(Locale.FRENCH) + "||";
-        // La conversation contient l'historique des questions-réponses depuis le début.
+
+        // 2. Analyser la question
+        int nbMots = question.trim().split("\\s+").length;
+        int nbCaracteres = question.length();
+        boolean estUneQuestion = question.trim().endsWith("?");
+
+        // 3. Construire la réponse
+        reponseServeur.append("Analyse de votre envoi :\n");
+        reponseServeur.append("-> Votre message contient ").append(nbMots).append(" mots.\n");
+        reponseServeur.append("-> Il fait ").append(nbCaracteres).append(" caractères de long.\n");
+
+        if (estUneQuestion) {
+            reponseServeur.append("-> J'ai détecté que vous posiez une question. Bien joué !");
+        } else {
+            reponseServeur.append("-> J'ai remarqué que vous n'avez pas mis de point d'interrogation. C'est une affirmation ?");
+        }
+
+        // 4. Mettre à jour la réponse du bean
+        this.reponse = reponseServeur.toString();
+
+        // 5. (Important) Vider les champs JSON car on n'appelle pas l'API
+        this.texteRequeteJson = "(Traitement local : pas de JSON de requête)";
+        this.texteReponseJson = "(Traitement local : pas de JSON de réponse)";
+
+        // La conversation contient l'historique
         afficherConversation();
+
+        // Vider le champ de question pour le prochain envoi
+        this.question = "";
+
         return null;
     }
 
