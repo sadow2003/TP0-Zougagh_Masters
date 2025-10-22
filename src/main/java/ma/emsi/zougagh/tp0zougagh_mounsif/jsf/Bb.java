@@ -189,16 +189,5 @@ public class Bb implements Serializable {
 
         return this.listeRolesSysteme;
     }
-    public void toggleDebug() {
-        this.setDebug(!isDebug());
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
 }
 
